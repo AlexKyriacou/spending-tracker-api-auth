@@ -14,21 +14,23 @@ const knexConfig = {
 
 console.log(knexConfig);
 
-import knex from 'knex';
+import knex from "knex";
 const testDBConnection = async () => {
-    const knexo = knex(knexConfig); // Instantiate the Knex class without using the 'new' keyword
-    try {
-        const result = await knexo.raw("SELECT * FROM users;");
-        console.log("DB connection successful");
-    } catch (error) {
-        console.error("DB connection failed:", error);
-    } finally {
-        await knexo.destroy();
-    }
+  const knexo = knex(knexConfig); // Instantiate the Knex class without using the 'new' keyword
+  try {
+    const result = await knexo.raw("SELECT * FROM users;");
+    console.log("DB connection successful");
+  } catch (error) {
+    console.error("DB connection failed:", error);
+  } finally {
+    await knexo.destroy();
+  }
 };
 testDBConnection();
 
-const typeDefs = readFileSync("src/graphql/schema/schema.graphql", { encoding: 'utf-8' });
+const typeDefs = readFileSync("src/graphql/schema/schema.graphql", {
+  encoding: "utf-8",
+});
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.

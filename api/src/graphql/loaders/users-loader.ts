@@ -29,7 +29,7 @@ export class UsersLoader extends BatchedSQLDataSource {
       .batch(async (query, keys) => {
         const result = await query.whereIn("u.id", keys);
         return keys.map((x) =>
-          result?.filter((y: User) => y.id === x).map(mapUserFields)
+          result?.filter((y: User) => y.id === x).map(mapUserFields),
         );
       });
   }

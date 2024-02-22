@@ -13,7 +13,7 @@ export const mutationResolvers: MutationResolvers = {
     parent,
     args: MutationSignUpArgs,
     context: GraphQLContext,
-    info
+    info,
   ): Promise<AuthPayload> => {
     try {
       // Extract input from arguments
