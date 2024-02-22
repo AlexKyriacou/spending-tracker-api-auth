@@ -1,8 +1,35 @@
+scalar Date
+
 type User {
   id: ID!
-  name: String!
+  username: String!
+  email: String!
+  password: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+input SignUpInput {
+  username: String!
+  email: String!
+  password: String!
+}
+
+input SignInInput {
+  usernameOrEmail: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Mutation {
+  signUp(input: SignUpInput!): AuthPayload!
+  signIn(input: SignInInput!): AuthPayload!
 }
 
 type Query {
-    me: User
+  me: User!
 }
