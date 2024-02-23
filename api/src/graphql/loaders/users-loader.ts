@@ -5,17 +5,18 @@ import {
 } from "@nic-jennings/sql-datasource";
 import { SignUpInput, User } from "../../types/graphql.js";
 import bcrypt from "bcrypt";
+import { UsersTableRow } from "../../types/db_types.js";
 
 const SALT_ROUNDS = 10;
 
 // Because the postgres table has snake
 // case fields we need to convert them to camel case
 // for the GraphQL schema. We also remove passwords from the result
-const mapUserFields = (userRow) => ({
+const mapUserFields = (userRow: UsersTableRow): User => ({
   username: userRow.username,
   createdAt: userRow.created_at,
   email: userRow.email,
-  id: userRow.id,
+  id: userRow.id.toString(),
   updatedAt: userRow.updated_at,
 });
 
@@ -29,9 +30,9 @@ export class UsersLoader extends BatchedSQLDataSource {
       .select("*")
       .from({ u: "users" })
       .batch(async (query, keys) => {
-        const result = await query.whereIn("u.id", keys);
+        const result: [UsersTableRow] = await query.whereIn("u.id", keys);
         return keys.map((x) =>
-          result?.filter((y: User) => y.id === x).map(mapUserFields)
+          result?.filter((y: UsersTableRow) => y.id === x).map(mapUserFields)
         );
       });
   }
@@ -46,7 +47,10 @@ export class UsersLoader extends BatchedSQLDataSource {
     const hashedPassword = await bcrypt.hash(input.password, SALT_ROUNDS);
     input.password = hashedPassword;
 
-    const [row] = await this.db.write("users").insert(input).returning("*");
+    const [row] = await this.db
+      .write("users")
+      .insert(input)
+      .returning<[UsersTableRow]>("*");
     const newUser = mapUserFields(row);
     return newUser;
   }
