@@ -1,9 +1,11 @@
+import { get } from "http";
 import { GraphQLContext } from "../../types/graphql-context.js";
 import {
   AuthPayload,
   MutationResolvers,
   MutationSignUpArgs,
 } from "../../types/graphql.js";
+import { createToken } from "../../auth/jwt.js";
 
 export const mutationResolvers: MutationResolvers = {
   signIn: async (_parent, _args, _context, _info) => {
@@ -22,9 +24,8 @@ export const mutationResolvers: MutationResolvers = {
       // Create new user
       const newUser = await context.dataSources.users.createUser(input);
 
-      // Generate token for the new user
-      const token = "testtoken"; //generateToken(newUser.id); // Assuming generateToken function generates a token based on user ID
-
+      // Generate JWT token for the new user
+      const token = createToken(newUser);
       // Return AuthPayload
       return {
         token,
