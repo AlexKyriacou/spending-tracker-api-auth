@@ -4,10 +4,11 @@ import {
   BatchedSQLDataSourceProps,
 } from "@nic-jennings/sql-datasource";
 import { SignUpInput, User } from "../../types/graphql.js";
-import bcrypt from "bcrypt";
 import { UsersTableRow } from "../../types/db_types.js";
-
-const SALT_ROUNDS = 10;
+import {
+  hashPassword,
+  passwordMeetsRequirements,
+} from "../../auth/password.js";
 
 // Because the postgres table has snake
 // case fields we need to convert them to camel case
@@ -43,15 +44,48 @@ export class UsersLoader extends BatchedSQLDataSource {
       throw new Error("Username, password, and email are required.");
     }
 
+    // Check if password meets complexity requirements
+    if (!passwordMeetsRequirements(input.password)) {
+      throw new Error("Password does not meet complexity requirements.");
+    }
+
     // Encrypt the password with bcrypt
-    const hashedPassword = await bcrypt.hash(input.password, SALT_ROUNDS);
+    const hashedPassword = await hashPassword(input.password);
     input.password = hashedPassword;
 
-    const [row] = await this.db
-      .write("users")
-      .insert(input)
-      .returning<[UsersTableRow]>("*");
-    const newUser = mapUserFields(row);
-    return newUser;
+    try {
+      const [row] = await this.db
+        .write("users")
+        .insert(input)
+        .returning<[UsersTableRow]>("*");
+      const newUser = mapUserFields(row);
+      return newUser;
+    } catch (error) {
+      throw new Error("Failed to create user: " + String(error));
+    }
+  }
+
+  async getUserByUsernameOrEmail(
+    usernameOrEmail: string
+  ): Promise<User | null> {
+    try {
+      const [row] = await this.db.query
+        .select("*")
+        .from({ u: "users" })
+        .where("u.username", usernameOrEmail)
+        .orWhere("u.email", usernameOrEmail)
+        .limit(1);
+
+      if (!row) {
+        return null;
+      }
+
+      const user = mapUserFields(row);
+      return user;
+    } catch (error) {
+      throw new Error(
+        "Failed to get user by username or email: " + String(error)
+      );
+    }
   }
 }
