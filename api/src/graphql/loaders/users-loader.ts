@@ -3,17 +3,19 @@ import {
   BatchedSQLDataSource,
   BatchedSQLDataSourceProps,
 } from "@nic-jennings/sql-datasource";
-import { User } from "../../types/graphql.js";
+import { SignUpInput, User } from "../../types/graphql.js";
+import bcrypt from "bcrypt";
+
+const SALT_ROUNDS = 10;
 
 // Because the postgres table has snake
 // case fields we need to convert them to camel case
-// for the GraphQL schema
+// for the GraphQL schema. We also remove passwords from the result
 const mapUserFields = (userRow) => ({
   username: userRow.username,
   createdAt: userRow.created_at,
   email: userRow.email,
   id: userRow.id,
-  password: userRow.password,
   updatedAt: userRow.updated_at,
 });
 
@@ -29,13 +31,22 @@ export class UsersLoader extends BatchedSQLDataSource {
       .batch(async (query, keys) => {
         const result = await query.whereIn("u.id", keys);
         return keys.map((x) =>
-          result?.filter((y: User) => y.id === x).map(mapUserFields),
+          result?.filter((y: User) => y.id === x).map(mapUserFields)
         );
       });
   }
 
-  async createUser(user: Partial<User>): Promise<User> {
-    const [row] = await this.db.write("users").insert(user).returning("*");
+  async createUser(input: SignUpInput): Promise<User> {
+    // Ensure that username, password and email are provided
+    if (!input.username || !input.password || !input.email) {
+      throw new Error("Username, password, and email are required.");
+    }
+
+    // Encrypt the password with bcrypt
+    const hashedPassword = await bcrypt.hash(input.password, SALT_ROUNDS);
+    input.password = hashedPassword;
+
+    const [row] = await this.db.write("users").insert(input).returning("*");
     const newUser = mapUserFields(row);
     return newUser;
   }

@@ -18,7 +18,7 @@ export const mutationResolvers: MutationResolvers = {
     try {
       // Extract input from arguments
       const { input } = args;
-
+      console.log("input", input)
       // Create new user
       const newUser = await context.dataSources.users.createUser(input);
 
@@ -31,8 +31,7 @@ export const mutationResolvers: MutationResolvers = {
         user: newUser,
       };
     } catch (error) {
-      // Handle error
-      throw new Error("Failed to sign up: " + error.message);
+      throw new Error("Failed to sign up: " + String(error));
     }
   },
 };
