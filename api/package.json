@@ -7,7 +7,7 @@
     "compile": "tsc",
     "start": "npm run compile && node ./dist/index.js",
     "codegen": "graphql-codegen --config codegen.ts",
-    "dev": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
+    "dev": "tsx watch src/index.ts",
     "test": "jest"
   },
   "keywords": [],
@@ -36,6 +36,7 @@
     "nodemon": "^3.0.3",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 }

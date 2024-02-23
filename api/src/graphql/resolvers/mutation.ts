@@ -1,11 +1,11 @@
-import { GraphQLContext } from "../../types/graphql-context.js";
+import { GraphQLContext } from "../../types/graphql-context";
 import {
   AuthPayload,
   MutationResolvers,
   MutationSignInArgs,
   MutationSignUpArgs,
-} from "../../types/graphql.js";
-import { createToken } from "../../auth/jwt.js";
+} from "../../types/graphql";
+import { createToken } from "../../auth/jwt";
 
 export const mutationResolvers: MutationResolvers = {
   signIn: async (

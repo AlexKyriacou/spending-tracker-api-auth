@@ -2,7 +2,11 @@ import jwt from "jsonwebtoken";
 import { User } from "../types/graphql";
 import { config } from 'dotenv';
 
-const jwtSecret = process.env.JWT_SECRET;
+var jwtSecret = process.env.JWT_SECRET;
+//if jwt not set try importing from env file for now
+if (!jwtSecret) {
+  jwtSecret = config().parsed.JWT_SECRET;
+}
 
 if (!jwtSecret) {
     throw new Error('JWT_SECRET is not set');

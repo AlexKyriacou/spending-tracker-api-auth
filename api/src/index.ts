@@ -1,8 +1,8 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { resolvers } from "./graphql/resolvers/index.js";
+import { resolvers } from "./graphql/resolvers/index";
 import { readFileSync } from "fs";
-import { UsersLoader } from "./graphql/loaders/users-loader.js";
+import { UsersLoader } from "./graphql/loaders/users-loader";
 const { HOST } = process.env;
 
 const knexConfig = {
