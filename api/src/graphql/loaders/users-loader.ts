@@ -6,6 +6,7 @@ import {
 import { SignUpInput, User } from "../../types/graphql";
 import { UsersTableRow } from "../../types/db_types";
 import {
+  comparePasswords,
   hashPassword,
   passwordMeetsRequirements,
 } from "../../auth/password";
@@ -81,6 +82,42 @@ export class UsersLoader extends BatchedSQLDataSource {
       }
 
       const user = mapUserFields(row);
+      return user;
+    } catch (error) {
+      throw new Error(
+        "Failed to get user by username or email: " + String(error)
+      );
+    }
+  }
+
+  // Add function to return a user based on login credentials
+  async getUserByLoginCredentials(
+    usernameOrEmail: string,
+    password: string
+  ): Promise<User | null> {
+    try {
+      const [row] = await this.db.query
+        .select("*")
+        .from({ u: "users" })
+        .where("u.username", usernameOrEmail)
+        .orWhere("u.email", usernameOrEmail)
+        .limit(1);
+
+      if (!row) {
+        return null;
+      }
+
+      const user = mapUserFields(row);
+
+      // Check if password is correct
+      const valid = await comparePasswords(
+        password,
+        row.password
+      );
+      if (!valid) {
+        return null;
+      }
+
       return user;
     } catch (error) {
       throw new Error(

@@ -14,7 +14,31 @@ export const mutationResolvers: MutationResolvers = {
     context: GraphQLContext,
     info
   ) => {
-    throw new Error("Resolver not implemented");
+    // Extract input from arguments
+    const { input } = args;
+
+    // Get user by username or email
+    const user = await context.dataSources.users.getUserByLoginCredentials(
+      input.usernameOrEmail,
+      input.password
+    );
+    if (!user) {
+      throw new Error("Invalid username or password");
+    }
+
+    let token: string;
+    try {
+      // Generate JWT token for the user
+      token = createToken(user);
+    } catch (error) {
+      throw new Error("Failed to create token: " + String(error));
+    }
+
+    // Return AuthPayload
+    return {
+      token,
+      user,
+    };
   },
   signUp: async (
     parent,
