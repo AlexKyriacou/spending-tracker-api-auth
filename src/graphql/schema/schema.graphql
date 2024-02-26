@@ -1,7 +1,7 @@
 scalar Date
 
 type User {
-  id: ID!
+  id: Int!
   username: String!
   email: String!
   createdAt: Date!

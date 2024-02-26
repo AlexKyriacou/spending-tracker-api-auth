@@ -18,12 +18,12 @@ const mapUserFields = (userRow: UsersTableRow): User => ({
   username: userRow.username,
   createdAt: userRow.created_at,
   email: userRow.email,
-  id: userRow.id.toString(),
+  id: userRow.id,
   updatedAt: userRow.updated_at,
 });
 
 export class UsersLoader extends BatchedSQLDataSource {
-  getUsers: BatchedLoader<string, User[]>;
+  getUsers: BatchedLoader<number, User[]>;
 
   constructor(config: BatchedSQLDataSourceProps) {
     super(config);
@@ -126,7 +126,7 @@ export class UsersLoader extends BatchedSQLDataSource {
     }
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async getUserById(id: number): Promise<User | null> {
     const [user] = await this.getUsers.load(id);
     return user;
   }

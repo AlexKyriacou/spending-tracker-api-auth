@@ -32,7 +32,7 @@ describe("User mutations", () => {
     const mockCreateUserOutput: AuthPayload = {
       token: "specific-token-value",
       user: {
-        id: "1",
+        id: 1,
         username: "test",
         email: "test@example.com",
         createdAt: new Date(),
@@ -42,7 +42,7 @@ describe("User mutations", () => {
 
     // Mock context with a mock users data source
     const mockContext = {
-      user: { id: "1" },
+      user: mockCreateUserOutput.user,
       dataSources: {
         users: {
           getUserByUsernameOrEmail: jest.fn().mockResolvedValue(null),
@@ -122,7 +122,7 @@ it("signs in an existing user", async () => {
   const mockSignInOutput: AuthPayload = {
     token: "specific-token-value",
     user: {
-      id: "1",
+      id: 1,
       username: "test",
       email: "test@example.com",
       createdAt: new Date(),
@@ -132,7 +132,7 @@ it("signs in an existing user", async () => {
 
   // Mock context with a mock users data source
   const mockContext = {
-    user: { id: "1" },
+    user: mockSignInOutput.user,
     dataSources: {
       users: {
         getUserByLoginCredentials: jest

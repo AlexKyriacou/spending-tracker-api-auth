@@ -60,7 +60,7 @@ export type User = {
   __typename?: 'User';
   createdAt: Scalars['Date']['output'];
   email: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['Int']['output'];
   updatedAt: Scalars['Date']['output'];
   username: Scalars['String']['output'];
 };
@@ -139,7 +139,7 @@ export type ResolversTypes = {
   AuthPayload: ResolverTypeWrapper<AuthPayload>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
-  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   SignInInput: SignInInput;
@@ -153,7 +153,7 @@ export type ResolversParentTypes = {
   AuthPayload: AuthPayload;
   Boolean: Scalars['Boolean']['output'];
   Date: Scalars['Date']['output'];
-  ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   Mutation: {};
   Query: {};
   SignInInput: SignInInput;
@@ -184,7 +184,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

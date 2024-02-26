@@ -6,6 +6,7 @@ import { UsersLoader } from "./graphql/loaders/users-loader";
 import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt";
 import knex from "knex";
 import * as dotenv from "dotenv";
+import { User } from "./types/graphql";
 dotenv.config();
 
 const { POSTGRES_HOST_STRING, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =
@@ -62,16 +63,17 @@ const server = new ApolloServer({
 await startStandaloneServer(server, {
   context: async ({ req, res }) => {
     // Get the user token from the headers.
+    const { cache } = server;
+    const userLoader = new UsersLoader({ knexConfig, cache });
+
     const token = getTokenFromRequest(req);
     const userId = getUserIdFromToken(token);
+    const user: User = userId ? await userLoader.getUserById(userId) : null;
 
-    const { cache } = server;
     return {
-      user: {
-        id: userId,
-      },
+      user: user,
       dataSources: {
-        users: new UsersLoader({ knexConfig, cache }),
+        users: userLoader,
       },
     };
   },

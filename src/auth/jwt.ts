@@ -19,15 +19,15 @@ export const verifyToken = (token: string): string | object => {
   return jwt.verify(token, jwtSecret);
 };
 
-export const getUserIdFromToken = (token: string): string => {
+export const getUserIdFromToken = (token: string): number | null => {
   if (!token) {
-    return "";
+    return null;
   }
-  const decoded = verifyToken(token) as { userId: string };
+  const decoded = verifyToken(token) as { userId: number };
   if (!decoded) {
-    return "";
+    return null;
   }
-  return decoded.userId.toString();
+  return decoded.userId;
 };
 
 export const getTokenFromRequest = (req: any): string => {
