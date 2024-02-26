@@ -21,5 +21,6 @@ jobs:
           extra_plugins: |
             @semantic-release/git
             @semantic-release/changelog
+          working-directory: ./api
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
