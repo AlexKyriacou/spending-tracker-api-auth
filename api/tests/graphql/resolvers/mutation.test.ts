@@ -3,21 +3,25 @@ import { readFileSync } from "fs";
 import { ApolloServer } from "@apollo/server";
 import { GraphQLContext } from "../../../src/types/graphql-context";
 import assert from "assert";
-import { AuthPayload, SignUpInput, User } from "../../../src/types/graphql";
+import {
+  AuthPayload,
+  SignInInput,
+  SignUpInput,
+} from "../../../src/types/graphql";
 import { UsersLoader } from "../../../src/graphql/loaders/users-loader";
 import { verifyToken } from "../../../src/auth/jwt";
 
-describe("SignUp mutation", () => {
+const typeDefs = readFileSync("src/graphql/schema/schema.graphql", {
+  encoding: "utf-8",
+});
+
+const server = new ApolloServer<GraphQLContext>({
+  typeDefs,
+  resolvers,
+});
+
+describe("User mutations", () => {
   it("creates a new user", async () => {
-    const typeDefs = readFileSync("src/graphql/schema/schema.graphql", {
-      encoding: "utf-8",
-    });
-
-    const server = new ApolloServer<GraphQLContext>({
-      typeDefs,
-      resolvers,
-    });
-
     // Mock input
     const input: SignUpInput = {
       username: "test",
@@ -106,4 +110,86 @@ describe("SignUp mutation", () => {
     const { userId } = decodedToken;
     expect(userId).toEqual(mockCreateUserOutput.user.id);
   });
+});
+
+it("signs in an existing user", async () => {
+  const input: SignInInput = {
+    usernameOrEmail: "test@example.com",
+    password: "password",
+  };
+
+  const mockSignInOutput: AuthPayload = {
+    token: "specific-token-value",
+    user: {
+      id: "1",
+      username: "test",
+      email: "test@example.com",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  };
+
+  // Mock context with a mock users data source
+  const mockContext = {
+    dataSources: {
+      users: {
+        getUserByLoginCredentials: jest
+          .fn()
+          .mockResolvedValue(mockSignInOutput.user),
+      } as unknown as UsersLoader,
+    },
+  };
+
+  /**
+   * Represents the response object returned from the signIn mutation.
+   */
+  const response = await server.executeOperation(
+    {
+      query: `mutation {
+        signIn(input: {
+          usernameOrEmail: "${input.usernameOrEmail}",
+          password: "${input.password}"
+        }) {
+          token
+          user {
+            id
+            username
+            email
+            createdAt
+            updatedAt
+          }
+        }
+      }`,
+    },
+    {
+      contextValue: mockContext,
+    }
+  );
+
+  const expectedQueryOutput: AuthPayload = {
+    token: mockSignInOutput.token,
+    user: {
+      id: mockSignInOutput.user.id,
+      username: mockSignInOutput.user.username,
+      email: mockSignInOutput.user.email,
+      createdAt: mockSignInOutput.user.createdAt.getTime(),
+      updatedAt: mockSignInOutput.user.updatedAt.getTime(),
+    },
+  };
+
+  assert(response.body.kind === "single");
+  expect(response.body.singleResult.errors).toBeUndefined();
+  expect((response.body.singleResult.data?.signIn as AuthPayload).user).toEqual(
+    expectedQueryOutput.user
+  );
+  expect(
+    mockContext.dataSources.users.getUserByLoginCredentials
+  ).toHaveBeenCalledWith(input.usernameOrEmail, input.password);
+  //check to ensure that JWT token is valid and for the user we created
+  const { token } = response.body.singleResult.data?.signIn as AuthPayload;
+  const decodedToken: { userId: string } = verifyToken(token) as {
+    userId: string;
+  };
+  const { userId } = decodedToken;
+  expect(userId).toEqual(mockSignInOutput.user.id);
 });
