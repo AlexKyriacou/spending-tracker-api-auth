@@ -1,4 +1,4 @@
-import { passwordMeetsRequirements, comparePasswords } from '../../src/auth/password';
+import { passwordMeetsRequirements, comparePasswords } from '../../src/auth/password.js';
 import bcrypt from 'bcrypt';
 
 describe('passwordMeetsRequirements', () => {

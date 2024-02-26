@@ -1,4 +1,4 @@
-import { dateScalar } from "../../../../src/graphql/resolvers/scalars/date"; // Replace with the correct module path
+import { dateScalar } from "../../../../src/graphql/resolvers/scalars/date.js"; // Replace with the correct module path
 import { Kind, IntValueNode, StringValueNode } from "graphql";
 
 describe("parseLiteral", () => {

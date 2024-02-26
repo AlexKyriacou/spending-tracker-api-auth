@@ -9,5 +9,11 @@
     "esModuleInterop": true,
     "types": ["node", "jest"],
   },
-  "exclude": ["codegen.ts"]
+  "exclude": [
+    "codegen.ts",
+    "jest.config.ts",
+    "dist",
+    "node_modules",
+    "tests/**/*.ts",
+    ]
 }

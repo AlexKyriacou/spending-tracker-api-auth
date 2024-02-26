@@ -1,4 +1,4 @@
-import { createToken, getUserIdFromToken } from "../../src/auth/jwt";
+import { createToken, getUserIdFromToken } from "../../src/auth/jwt.js";
 import { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
 
 describe("JWT Token Logic", () => {

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../types/graphql";
+import { User } from "../types/graphql.js";
 import * as dotenv from 'dotenv'
 dotenv.config()
 

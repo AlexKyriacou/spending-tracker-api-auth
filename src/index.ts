@@ -1,12 +1,12 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { resolvers } from "./graphql/resolvers/index";
+import { resolvers } from "./graphql/resolvers/index.js";
 import { readFileSync } from "fs";
-import { UsersLoader } from "./graphql/loaders/users-loader";
-import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt";
+import { UsersLoader } from "./graphql/loaders/users-loader.js";
+import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt.js";
 import knex from "knex";
 import * as dotenv from "dotenv";
-import { User } from "./types/graphql";
+import { User } from "./types/graphql.js";
 dotenv.config();
 
 const { POSTGRES_HOST_STRING, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =

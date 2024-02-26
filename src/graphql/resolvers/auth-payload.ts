@@ -1,10 +1,10 @@
-import { GraphQLContext } from "../../types/graphql-context";
+import { GraphQLContext } from "../../types/graphql-context.js";
 import {
   AuthPayload,
   AuthPayloadResolvers,
   ResolverTypeWrapper,
   User,
-} from "../../types/graphql";
+} from "../../types/graphql.js";
 
 export const authPayloadResolvers: AuthPayloadResolvers = {
   user: async (

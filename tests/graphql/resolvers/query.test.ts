@@ -1,9 +1,9 @@
-import { resolvers } from "../../../src/graphql/resolvers/index";
+import { resolvers } from "../../../src/graphql/resolvers/index.js";
 import { readFileSync } from "fs";
 import { ApolloServer } from "@apollo/server";
-import { GraphQLContext } from "../../../src/types/graphql-context";
+import { GraphQLContext } from "../../../src/types/graphql-context.js";
 import assert from "assert";
-import { UsersLoader } from "../../../src/graphql/loaders/users-loader";
+import { UsersLoader } from "../../../src/graphql/loaders/users-loader.js";
 
 const typeDefs = readFileSync("src/graphql/schema/schema.graphql", {
   encoding: "utf-8",

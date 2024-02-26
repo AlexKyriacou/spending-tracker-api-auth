@@ -1,4 +1,4 @@
-import { QueryResolvers, User } from "../../types/graphql";
+import { QueryResolvers, User } from "../../types/graphql.js";
 
 export const queryResolvers: QueryResolvers = {
   me: async (parent, args, context, info): Promise<User> => {

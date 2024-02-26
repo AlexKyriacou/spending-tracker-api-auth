@@ -3,13 +3,13 @@ import {
   BatchedSQLDataSource,
   BatchedSQLDataSourceProps,
 } from "@nic-jennings/sql-datasource";
-import { SignUpInput, User } from "../../types/graphql";
-import { UsersTableRow } from "../../types/db_types";
+import { SignUpInput, User } from "../../types/graphql.js";
+import { UsersTableRow } from "../../types/db_types.js";
 import {
   comparePasswords,
   hashPassword,
   passwordMeetsRequirements,
-} from "../../auth/password";
+} from "../../auth/password.js";
 
 // Because the postgres table has snake
 // case fields we need to convert them to camel case
