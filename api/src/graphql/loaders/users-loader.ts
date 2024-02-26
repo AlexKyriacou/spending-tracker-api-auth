@@ -34,7 +34,7 @@ export class UsersLoader extends BatchedSQLDataSource {
       .batch(async (query, keys) => {
         const result: [UsersTableRow] = await query.whereIn("u.id", keys);
         return keys.map((x) =>
-          result?.filter((y: UsersTableRow) => y.id === x).map(mapUserFields)
+          result?.filter((y: UsersTableRow) => y.id == x).map(mapUserFields)
         );
       });
   }
@@ -124,5 +124,10 @@ export class UsersLoader extends BatchedSQLDataSource {
         "Failed to get user by username or email: " + String(error)
       );
     }
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    const [user] = await this.getUsers.load(id);
+    return user;
   }
 }

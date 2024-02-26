@@ -15,6 +15,7 @@ const knexConfig = {
 console.log(knexConfig);
 
 import knex from "knex";
+import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt";
 const testDBConnection = async () => {
   const knexo = knex(knexConfig); // Instantiate the Knex class without using the 'new' keyword
   try {
@@ -44,9 +45,16 @@ const server = new ApolloServer({
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
 await startStandaloneServer(server, {
-  context: async () => {
+  context: async ({ req, res }) => {
+    // Get the user token from the headers.
+    const token = getTokenFromRequest(req);
+    const userId = getUserIdFromToken(token);
+
     const { cache } = server;
     return {
+      user: {
+        id: userId,
+      },
       dataSources: {
         users: new UsersLoader({ knexConfig, cache }),
       },

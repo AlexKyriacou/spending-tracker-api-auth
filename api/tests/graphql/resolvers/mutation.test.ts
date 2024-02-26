@@ -42,6 +42,7 @@ describe("User mutations", () => {
 
     // Mock context with a mock users data source
     const mockContext = {
+      user: { id: "1" },
       dataSources: {
         users: {
           getUserByUsernameOrEmail: jest.fn().mockResolvedValue(null),
@@ -131,6 +132,7 @@ it("signs in an existing user", async () => {
 
   // Mock context with a mock users data source
   const mockContext = {
+    user: { id: "1" },
     dataSources: {
       users: {
         getUserByLoginCredentials: jest
