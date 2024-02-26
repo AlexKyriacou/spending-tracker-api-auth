@@ -3,23 +3,37 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { resolvers } from "./graphql/resolvers/index";
 import { readFileSync } from "fs";
 import { UsersLoader } from "./graphql/loaders/users-loader";
-const { HOST } = process.env;
+import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt";
+import knex from "knex";
+import * as dotenv from "dotenv";
+dotenv.config();
+
+const { POSTGRES_HOST_STRING, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =
+  process.env;
+
+// Ensure that env vars are set
+if (!POSTGRES_DB) {
+  throw new Error("POSTGRES_DB_NAME is not set");
+}
+if (!POSTGRES_USER) {
+  throw new Error("POSTGRES_DB_USERNAME is not set");
+}
+if (!POSTGRES_PASSWORD) {
+  throw new Error("POSTGRES_DB_PASSWORD is not set");
+}
 
 const knexConfig = {
   client: "pg",
-  connection: `postgresql://postgres:postgres@${
-    HOST ? HOST : "localhost"
-  }:5432/postgres`,
+  connection: `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${
+    POSTGRES_HOST_STRING ? POSTGRES_HOST_STRING : "host.docker.internal"
+  }:5432/${POSTGRES_DB}`,
 };
 
-console.log(knexConfig);
-
-import knex from "knex";
-import { getTokenFromRequest, getUserIdFromToken } from "./auth/jwt";
 const testDBConnection = async () => {
-  const knexo = knex(knexConfig); // Instantiate the Knex class without using the 'new' keyword
+  const knexo = knex(knexConfig);
+
   try {
-    const result = await knexo.raw("SELECT * FROM users;");
+    await knexo.raw("SELECT 1");
     console.log("DB connection successful");
   } catch (error) {
     console.error("DB connection failed:", error);
@@ -27,6 +41,7 @@ const testDBConnection = async () => {
     await knexo.destroy();
   }
 };
+
 testDBConnection();
 
 const typeDefs = readFileSync("src/graphql/schema/schema.graphql", {
