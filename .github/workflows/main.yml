@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-    - main
-    - release/*
+      - main
+      - release/*
 jobs:
   release:
     name: release
@@ -21,5 +21,12 @@ jobs:
           extra_plugins: |
             @semantic-release/git
             @semantic-release/changelog
+            [
+              "@semantic-release/npm",
+              {
+                "npmPublish": false,
+                "tarballDir": false
+              }
+            ],
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
