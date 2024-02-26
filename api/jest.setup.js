@@ -1,1 +1,0 @@
-process.env.JWT_SECRET = 'your_test_secret';
