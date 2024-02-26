@@ -43,6 +43,8 @@
     "@graphql-codegen/introspection": "4.0.3",
     "@graphql-codegen/typescript": "4.0.5",
     "@graphql-codegen/typescript-resolvers": "4.0.5",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
