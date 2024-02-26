@@ -11,6 +11,21 @@
     "dev": "tsx watch src/index.ts",
     "test": "jest"
   },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/npm",
+        {
+          "npmPublish": false,
+          "tarballDir": false
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -35,6 +50,7 @@
     "concurrently": "^8.2.2",
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
+    "semantic-release": "^23.0.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
